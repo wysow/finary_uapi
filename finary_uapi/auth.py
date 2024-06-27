@@ -24,7 +24,7 @@ def prepare_session() -> requests.Session:
     s.cookies = cookie_jar_file  # type: ignore
 
     tokens_url = f"{CLERK_ROOT}/v1/client/sessions/{session_id}/tokens"
-    headers = {"Origin": f"{APP_ROOT}", "Referer": f"{APP_ROOT}"}
+    headers = {"Origin": f"{APP_ROOT}", "Referer": f"{APP_ROOT}", "Connection": "keep-alive", "Accept": "*/*", "User-Agent": "finary_uapi 0.2.0"}
     x = s.post(tokens_url, headers=headers)
     if x.status_code == 200:
         session_token = x.json()["jwt"]
@@ -33,6 +33,6 @@ def prepare_session() -> requests.Session:
             json.dump(data, json_file)
 
     s.cookies = saved_cookie
-    s.headers.update({"authorization": f"Bearer {session_token}"})
+    s.headers.update({"authorization": f"Bearer {session_token}", "Connection": "keep-alive", "Accept": "*/*", "User-Agent": "finary_uapi 0.2.0"})
 
     return s
